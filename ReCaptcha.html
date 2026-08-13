@@ -4,13 +4,18 @@
     <meta charset="utf-8">
     <title>Robot Doğrulama</title>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script>
+        // Kullanıcı robot olmadığını doğruladığında bu fonksiyon otomatik çalışır
+        function captchaValidated(token) {
+            // Buraya doğrulama başarılı olduğunda yapılacak işlemler eklenebilir
+            console.log("Doğrulama başarılı!");
+        }
+    </script>
 </head>
 <body>
     <form action="verify.php" method="POST">
-        <div class="g-recaptcha" data-sitekey="6Lf3kEstAAAAAGTh4_5ZEv7Z0ZS5mHYTnHotbPLl"></div>
-        <br/>
-        <input type="submit" value="Doğrula">
+        <!-- data-callback özelliği "Doğrula" butonuna gerek kalmadan otomatik algılama sağlar -->
+        <div class="g-recaptcha" data-sitekey="6Lf3kEstAAAAAGTh4_5ZEv7Z0ZS5mHYTnHotbPLl" data-callback="captchaValidated"></div>
     </form>
 </body>
 </html>
-
