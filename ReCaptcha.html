@@ -5,16 +5,16 @@
     <title>Robot Doğrulama</title>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script>
-        // Kullanıcı robot olmadığını doğruladığında bu fonksiyon otomatik çalışır
         function captchaValidated(token) {
-            // Buraya doğrulama başarılı olduğunda yapılacak işlemler eklenebilir
-            console.log("Doğrulama başarılı!");
+            // Doğrulama başarılı olduğunda App Inventor'a sinyal gönderir
+            if (window.AppInventor) {
+                window.AppInventor.setWebViewString("SUCCESS");
+            }
         }
     </script>
 </head>
 <body>
-    <form action="verify.php" method="POST">
-        <!-- data-callback özelliği "Doğrula" butonuna gerek kalmadan otomatik algılama sağlar -->
+    <form>
         <div class="g-recaptcha" data-sitekey="6Lf3kEstAAAAAGTh4_5ZEv7Z0ZS5mHYTnHotbPLl" data-callback="captchaValidated"></div>
     </form>
 </body>
