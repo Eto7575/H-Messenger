@@ -16,11 +16,10 @@
             overflow: hidden;
         }
         
-        /* reCAPTCHA rozetini ortala ve büyüt */
         .grecaptcha-badge {
             position: static !important;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15) !important;
-            transform: scale(1.0) !important; /* İhtiyaca göre 2.5 veya 3.0 yapabilirsin */
+            transform: scale(1.0) !important;
             transform-origin: center center !important;
         }
     </style>
@@ -30,7 +29,13 @@
         grecaptcha.ready(function() {
             grecaptcha.execute('6LeeMtYtAAAAAOpZjbrMuhPxjuMmFzfn_vKEqyUh', {action: 'USER_ACTION'}).then(function(token) {
                 if (window.AppInventor) {
+                    // 1. Eski blokların kilitlenmemesi için "SUCCESS" gönder
                     window.AppInventor.setWebViewString("SUCCESS");
+                    
+                    // 2. Hemen ardından yeni REST API bloklarında kullanmak üzere token'ı gönder
+                    setTimeout(function() {
+                        window.AppInventor.setWebViewString(token);
+                    }, 50);
                 }
             });
         });
