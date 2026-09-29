@@ -1,21 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <title>Robot Doğrulama</title>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    <script>
-        function captchaValidated(token) {
-            // Doğrulama başarılı olduğunda App Inventor'a sinyal gönderir
-            if (window.AppInventor) {
-                window.AppInventor.setWebViewString("SUCCESS");
-            }
-        }
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://www.google.com/recaptcha/api.js?render=6LeeMtYtAAAAAOpZjbrMuhPxjuMmFzfn_vKEqyUh"></script>
 </head>
 <body>
-    <form>
-        <div class="g-recaptcha" data-sitekey="6Lf3kEstAAAAAGTh4_5ZEv7Z0ZS5mHYTnHotbPLl" data-callback="captchaValidated"></div>
-    </form>
+    <script>
+        grecaptcha.ready(function() {
+            grecaptcha.execute('6LeeMtYtAAAAAOpZjbrMuhPxjuMmFzfn_vKEqyUh', {action: 'USER_ACTION'}).then(function(token) {
+                if (window.AppInventor) {
+                    window.AppInventor.setWebViewString("SUCCESS");
+                }
+            });
+        });
+    </script>
 </body>
 </html>
