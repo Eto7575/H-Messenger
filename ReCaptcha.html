@@ -1,8 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=50, initial-scale=10.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="https://www.google.com/recaptcha/api.js?render=6LeeMtYtAAAAAOpZjbrMuhPxjuMmFzfn_vKEqyUh"></script>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffffff;
+            overflow: hidden;
+        }
+        
+        /* reCAPTCHA rozetini ortala ve büyüt */
+        .grecaptcha-badge {
+            position: static !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15) !important;
+            transform: scale(2.8) !important; /* İhtiyaca göre 2.5 veya 3.0 yapabilirsin */
+            transform-origin: center center !important;
+        }
+    </style>
 </head>
 <body>
     <script>
