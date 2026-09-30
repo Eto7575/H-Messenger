@@ -1,39 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <script src="https://www.google.com/recaptcha/api.js?render=6LeeMtYtAAAAAOpZjbrMuhPxjuMmFzfn_vKEqyUh"></script>
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #00aaee;
-            overflow: hidden;
-        }
-        
-        /* reCAPTCHA rozetini ortala ve büyüt */
+    <meta charset="utf-8">
+    <title>ReCaptcha</title>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script>
+        function captchaValidated(token) {
+            // Doğrulama başarılı olduğunda App Inventor'a sinyal gönderir
+            if (window.AppInventor) {
+                window.AppInventor.setWebViewString("SUCCESS");
+
+                
         .grecaptcha-badge {
             position: static !important;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15) !important;
             transform: scale(1.0) !important; /* İhtiyaca göre 2.5 veya 3.0 yapabilirsin */
             transform-origin: center center !important;
+            }
         }
-    </style>
+    </script>
 </head>
 <body>
-    <script>
-        grecaptcha.ready(function() {
-            grecaptcha.execute('6LeeMtYtAAAAAOpZjbrMuhPxjuMmFzfn_vKEqyUh', {action: 'USER_ACTION'}).then(function(token) {
-                if (window.AppInventor) {
-                    window.AppInventor.setWebViewString("SUCCESS");
-                }
-            });
-        });
-    </script>
+    <form>
+        <div class="g-recaptcha" data-sitekey="6Lf3kEstAAAAAGTh4_5ZEv7Z0ZS5mHYTnHotbPLl" data-callback="captchaValidated"></div>
+    </form>
 </body>
 </html>
+Eski v2 kodum
