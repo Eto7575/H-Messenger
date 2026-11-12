@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub Giriş Test</title>
+    <title>GitHub Giriş</title>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, GithubAuthProvider, signInWithRedirect, getRedirectResult } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -24,24 +24,24 @@
             const auth = getAuth(app);
             const provider = new GithubAuthProvider();
 
-            // Sayfa açıldığında yönlendirme sonucunu kontrol et
+            // GitHub'dan dönüldüğünde sonucu yakala (Kullanıcının Firebase'e kaydedilmesi bu adımda gerçekleşir)
             getRedirectResult(auth)
               .then((result) => {
                 if (result) {
                   const user = result.user;
+                  // Başarılı giriş sonrası App Inventor'a özel URL ile verileri aktar
                   window.location.href = "appinventor://login_success?email=" + encodeURIComponent(user.email || "") + "&name=" + encodeURIComponent(user.displayName || "");
                 }
-              }).catch((error) => {
-                alert("Yönlendirme Hatası: " + error.code + " - " + error.message);
+              })
+              .catch((error) => {
+                alert("Giriş Tamamlama Hatası: " + error.code + " - " + error.message);
               });
 
-            // Butona tıklandığında çalışacak fonksiyon
+            // Butona tıklandığında GitHub yönlendirmesini başlat
             window.girisYap = function() {
-                console.label = "Butona tıklandı";
-                signInWithRedirect(auth, provider).catch((error) => {
-                    // Eğer tetikleme sırasında hata olursa ekranda kutu içinde göster
-                    alert("Giriş Başlatılamadı! Hata: " + error.code + " - " + error.message);
-                });
+              signInWithRedirect(auth, provider).catch((error) => {
+                alert("Giriş Başlatılamadı: " + error.code + " - " + error.message);
+              });
             }
         } catch (e) {
             alert("Firebase Başlatma Hatası: " + e.message);
