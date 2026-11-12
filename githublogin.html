@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub Giriş</title>
+    <title>GitHub Giriş Test</title>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, GithubAuthProvider, signInWithRedirect, getRedirectResult } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -19,25 +19,32 @@
           measurementId: "G-4Y6ZN7W2SC"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth();
-        const provider = new GithubAuthProvider();
+        try {
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            const provider = new GithubAuthProvider();
 
-        // GitHub'dan giriş yapıp geri dönüldüğünde sonucu yakala
-        getRedirectResult(auth)
-          .then((result) => {
-            if (result) {
-              const user = result.user;
-              // Başarılı giriş sonrası App Inventor'a özel URL ile veriyi aktar
-              window.location.href = "appinventor://login_success?email=" + encodeURIComponent(user.email || "") + "&name=" + encodeURIComponent(user.displayName || "");
+            // Sayfa açıldığında yönlendirme sonucunu kontrol et
+            getRedirectResult(auth)
+              .then((result) => {
+                if (result) {
+                  const user = result.user;
+                  window.location.href = "appinventor://login_success?email=" + encodeURIComponent(user.email || "") + "&name=" + encodeURIComponent(user.displayName || "");
+                }
+              }).catch((error) => {
+                alert("Yönlendirme Hatası: " + error.code + " - " + error.message);
+              });
+
+            // Butona tıklandığında çalışacak fonksiyon
+            window.girisYap = function() {
+                console.label = "Butona tıklandı";
+                signInWithRedirect(auth, provider).catch((error) => {
+                    // Eğer tetikleme sırasında hata olursa ekranda kutu içinde göster
+                    alert("Giriş Başlatılamadı! Hata: " + error.code + " - " + error.message);
+                });
             }
-          }).catch((error) => {
-            alert("Giriş Hatası: " + error.message);
-          });
-
-        // Butona tıklandığında GitHub yönlendirmesini başlat
-        window.girisYap = function() {
-          signInWithRedirect(auth, provider);
+        } catch (e) {
+            alert("Firebase Başlatma Hatası: " + e.message);
         }
     </script>
 </head>
