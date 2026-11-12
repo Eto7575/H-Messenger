@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GitHub Giriş</title>
     <script type="module">
+
+    
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, GithubAuthProvider, signInWithRedirect, getRedirectResult } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
@@ -19,10 +21,16 @@
           measurementId: "G-4Y6ZN7W2SC"
         };
 
+
         try {
             const app = initializeApp(firebaseConfig);
             const auth = getAuth(app);
             const provider = new GithubAuthProvider();
+<style>
+    body {
+        background-color: #44ccff;
+    }
+</style>
 
             // GitHub'dan dönüldüğünde sonucu yakala (Kullanıcının Firebase'e kaydedilmesi bu adımda gerçekleşir)
             getRedirectResult(auth)
@@ -51,7 +59,7 @@
 <body style="text-align: center; margin-top: 80px; font-family: Arial, sans-serif; background-color: #f6f8fa;">
     <h2>Uygulamaya Giriş Yap</h2>
     <p style="color: #586069; margin-bottom: 30px;">Devam etmek için GitHub hesabınızı kullanın.</p>
-    <button onclick="girisYap()" style="padding: 14px 28px; font-size: 16px; background-color: #0033ff; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">
+    <button onclick="girisYap()" style="padding: 14px 28px; font-size: 16px; background-color: #dddddd; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">
       GitHub ile Giriş Yap
     </button>
 </body>
