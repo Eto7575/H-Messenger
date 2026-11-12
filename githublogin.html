@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Giriş</title>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, GithubAuthProvider, signInWithRedirect, getRedirectResult } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyC_UbnaLpQv8Lnq65QQL9ARRZEPRZqW2d8",
+          authDomain: "h-messenger-1779c.firebaseapp.com",
+          databaseURL: "https://h-messenger-1779c-default-rtdb.firebaseio.com",
+          projectId: "h-messenger-1779c",
+          storageBucket: "h-messenger-1779c.firebasestorage.app",
+          messagingSenderId: "769297013571",
+          appId: "1:769297013571:web:3106ad119ae72e377b2df6",
+          measurementId: "G-YKTLBVH5CW"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth();
+        const provider = new GithubAuthProvider();
+
+        // GitHub'dan giriş yapıp geri dönüldüğünde sonucu yakala
+        getRedirectResult(auth)
+          .then((result) => {
+            if (result) {
+              const user = result.user;
+              // Başarılı giriş sonrası App Inventor'a özel URL ile veriyi aktar
+              window.location.href = "appinventor://login_success?email=" + encodeURIComponent(user.email || "") + "&name=" + encodeURIComponent(user.displayName || "");
+            }
+          }).catch((error) => {
+            alert("Giriş Hatası: " + error.message);
+          });
+
+        // Butona tıklandığında GitHub yönlendirmesini başlat
+        window.girisYap = function() {
+          signInWithRedirect(auth, provider);
+        }
+    </script>
+</head>
+<body style="text-align: center; margin-top: 80px; font-family: Arial, sans-serif; background-color: #f6f8fa;">
+    <h2>Uygulamaya Giriş Yap</h2>
+    <p style="color: #586069; margin-bottom: 30px;">Devam etmek için GitHub hesabınızı kullanın.</p>
+    <button onclick="girisYap()" style="padding: 14px 28px; font-size: 16px; background-color: #24292e; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">
+      GitHub ile Giriş Yap
+    </button>
+</body>
+</html>
