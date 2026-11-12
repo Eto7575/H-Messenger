@@ -4,11 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GitHub Giriş</title>
+    <style>
+        body {
+            background-color: #335577;
+            color: #ffffff;
+            text-align: center;
+            margin-top: 80px;
+            font-family: Arial, sans-serif;
+        }
+        p {
+            color: #d0d7de;
+            margin-bottom: 30px;
+        }
+        button {
+            padding: 14px 28px;
+            font-size: 16px;
+            background-color: #24292e;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #444c56;
+        }
+    </style>
     <script type="module">
-
-    
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, GithubAuthProvider, signInWithRedirect, getRedirectResult } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, GithubAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyC_UbnaLpQv8Lnq65QQL9ARRZEPRZqW2d8",
@@ -21,46 +45,5 @@
           measurementId: "G-4Y6ZN7W2SC"
         };
 
-
         try {
-            const app = initializeApp(firebaseConfig);
-            const auth = getAuth(app);
-            const provider = new GithubAuthProvider();
-<style>
-    body {
-        background-color: #44ccff;
-    }
-</style>
-
-            // GitHub'dan dönüldüğünde sonucu yakala (Kullanıcının Firebase'e kaydedilmesi bu adımda gerçekleşir)
-            getRedirectResult(auth)
-              .then((result) => {
-                if (result) {
-                  const user = result.user;
-                  // Başarılı giriş sonrası App Inventor'a özel URL ile verileri aktar
-                  window.location.href = "appinventor://login_success?email=" + encodeURIComponent(user.email || "") + "&name=" + encodeURIComponent(user.displayName || "");
-                }
-              })
-              .catch((error) => {
-                alert("Giriş Tamamlama Hatası: " + error.code + " - " + error.message);
-              });
-
-            // Butona tıklandığında GitHub yönlendirmesini başlat
-            window.girisYap = function() {
-              signInWithRedirect(auth, provider).catch((error) => {
-                alert("Giriş Başlatılamadı: " + error.code + " - " + error.message);
-              });
-            }
-        } catch (e) {
-            alert("Firebase Başlatma Hatası: " + e.message);
-        }
-    </script>
-</head>
-<body style="text-align: center; margin-top: 80px; font-family: Arial, sans-serif; background-color: #f6f8fa;">
-    <h2>Uygulamaya Giriş Yap</h2>
-    <p style="color: #586069; margin-bottom: 30px;">Devam etmek için GitHub hesabınızı kullanın.</p>
-    <button onclick="girisYap()" style="padding: 14px 28px; font-size: 16px; background-color: #dddddd; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">
-      GitHub ile Giriş Yap
-    </button>
-</body>
-</html>
+            const app =
