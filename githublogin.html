@@ -9,9 +9,11 @@
             background-color: #335577;
             color: #ffffff;
             text-align: center;
-            padding-top: 100px;
+            padding-top: 80px;
             font-family: Arial, sans-serif;
             margin: 0;
+            padding-left: 20px;
+            padding-right: 20px;
         }
         h2 {
             font-size: 24px;
@@ -32,14 +34,26 @@
             cursor: pointer;
             font-weight: bold;
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 300px;
         }
         button:hover {
             background-color: #444c56;
         }
+        button:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        #status {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #ffeb3b;
+        }
     </style>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, GithubAuthProvider, signInWithRedirect, getRedirectResult } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, GithubAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyC_UbnaLpQv8Lnq65QQL9ARRZEPRZqW2d8",
@@ -52,37 +66,45 @@
           measurementId: "G-4Y6ZN7W2SC"
         };
 
+        const statusEl = document.getElementById("status");
+        const loginBtn = document.getElementById("loginBtn");
+
         try {
             const app = initializeApp(firebaseConfig);
             const auth = getAuth(app);
             const provider = new GithubAuthProvider();
 
-            // GitHub'dan geri dönüldüğünde sonucu yakala ve Firebase'e kaydet
-            getRedirectResult(auth)
-              .then((result) => {
-                if (result) {
-                  const user = result.user;
-                  window.location.href = "appinventor://login_success?email=" + encodeURIComponent(user.email || "") + "&name=" + encodeURIComponent(user.displayName || "");
-                }
-              })
-              .catch((error) => {
-                alert("Giriş Tamamlama Hatası: " + error.code);
-              });
+            statusEl.textContent = "Sistem hazır.";
 
-            // Butona tıklandığında yönlendirme (redirect) ile giriş başlat
+            // Butona tıklandığında popup ile giriş başlat ve direkt kaydet
             window.girisYap = function() {
-                signInWithRedirect(auth, provider).catch((error) => {
-                    alert("Giriş Başlatılamadı: " + error.code);
-                });
+                loginBtn.disabled = true;
+                statusEl.textContent = "GitHub oturum açma penceresi açılıyor...";
+
+                signInWithPopup(auth, provider)
+                  .then((result) => {
+                    const user = result.user;
+                    statusEl.textContent = "Kayıt başarılı! Yönlendiriliyor...";
+                    
+                    // Firebase Authentication listesine eklendikten sonra App Inventor'a yönlendir
+                    setTimeout(() => {
+                        window.location.href = "appinventor://login_success?email=" + encodeURIComponent(user.email || "") + "&name=" + encodeURIComponent(user.displayName || "");
+                    }, 1000);
+                  })
+                  .catch((error) => {
+                    statusEl.textContent = "Giriş Hatası: " + error.code;
+                    loginBtn.disabled = false;
+                  });
             }
         } catch (e) {
-            alert("Firebase Başlatma Hatası: " + e.message);
+            statusEl.textContent = "Firebase Hatası: " + e.message;
         }
     </script>
 </head>
 <body>
     <h2>Uygulamaya Giriş Yap</h2>
     <p>Devam etmek için GitHub hesabınızı kullanın.</p>
-    <button onclick="girisYap()">GitHub ile Giriş Yap</button>
+    <button id="loginBtn" onclick="girisYap()">GitHub ile Giriş Yap</button>
+    <div id="status"></div>
 </body>
 </html>
