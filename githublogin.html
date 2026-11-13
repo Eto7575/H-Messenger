@@ -36,7 +36,7 @@
     </style>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, GithubAuthProvider, signInWithRedirect, getRedirectResult } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, GithubAuthProvider, signInWithRedirect, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyC_UbnaLpQv8Lnq65QQL9ARRZEPRZqW2d8",
@@ -57,34 +57,35 @@
             const auth = getAuth(app);
             const provider = new GithubAuthProvider();
 
-            statusEl.textContent = "Sistem hazır.";
+            statusEl.textContent = "Sistem hazır. Giriş bekleniyor...";
 
-            // GitHub'dan geri dönüldüğünde sonucu yakala
-            getRedirectResult(auth)
-              .then((result) => {
-                if (result) {
-                  const user = result.user;
-                  const email = user.email || "Eposta_Bulunamadi";
-                  statusEl.textContent = "Giriş başarılı! Uygulamaya aktarılıyor...";
-                  
-                  // App Inventor'a e-postayı gönder
-                  setTimeout(() => {
-                      if (window.AppInventor && window.AppInventor.setWebViewString) {
-                          window.AppInventor.setWebViewString(email);
-                      }
-                  }, 500);
+            // Oturum durumunu dinle ve paneldeki e-postayı güvenle yakala
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    const email = user.email || (user.providerData && user.providerData[0] && user.providerData[0].email) || "Eposta_Bulunamadi";
+                    
+                    statusEl.textContent = "Giriş yapıldı: " + email;
+                    loginBtn.disabled = true;
+
+                    // App Inventor'a e-postayı gönder
+                    try {
+                        if (window.AppInventor && window.AppInventor.setWebViewString) {
+                            window.AppInventor.setWebViewString(email);
+                        }
+                    } catch (err) {
+                        console.log("AppInventor köprü hatası: ", err);
+                    }
                 }
-              })
-              .catch((error) => {
-                statusEl.textContent = "Giriş Hatası: " + error.code;
-                loginBtn.disabled = false;
-              });
+            });
 
-            // Butona tıklandığında yönlendirmeyi başlat
+            // Butona tıklandığında GitHub ile giriş yönlendirmesini başlat
             window.girisYap = function() {
                 loginBtn.disabled = true;
                 statusEl.textContent = "GitHub'a yönlendiriliyorsunuz...";
-                signInWithRedirect(auth, provider);
+                signInWithRedirect(auth, provider).catch((error) => {
+                    statusEl.textContent = "Giriş Hatası: " + error.code;
+                    loginBtn.disabled = false;
+                });
             }
         } catch (e) {
             statusEl.textContent = "Firebase Hatası: " + e.message;
