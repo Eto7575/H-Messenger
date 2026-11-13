@@ -76,7 +76,7 @@
 
             statusEl.textContent = "Sistem hazır.";
 
-            // Butona tıklandığında popup ile giriş başlat ve direkt kaydet
+            // Butona tıklandığında popup ile giriş başlat ve yeni formata göre yönlendir
             window.girisYap = function() {
                 loginBtn.disabled = true;
                 statusEl.textContent = "GitHub oturum açma penceresi açılıyor...";
@@ -86,9 +86,9 @@
                     const user = result.user;
                     statusEl.textContent = "Kayıt başarılı! Yönlendiriliyor...";
                     
-                    // Firebase Authentication listesine eklendikten sonra App Inventor'a yönlendir
+                    // Yeni yönlendirme formatı: appinventor://logined + e-posta
                     setTimeout(() => {
-                        window.location.href = "appinventor://login_success?email=" + encodeURIComponent(user.email || "") + "&name=" + encodeURIComponent(user.displayName || "");
+                        window.location.href = "appinventor://logined" + encodeURIComponent(user.email || "");
                     }, 1000);
                   })
                   .catch((error) => {
