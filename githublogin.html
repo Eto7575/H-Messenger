@@ -15,15 +15,8 @@
             padding-left: 20px;
             padding-right: 20px;
         }
-        h2 {
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-        p {
-            color: #d0d7de;
-            margin-bottom: 30px;
-            font-size: 14px;
-        }
+        h2 { font-size: 24px; margin-bottom: 10px; }
+        p { color: #d0d7de; margin-bottom: 30px; font-size: 14px; }
         button {
             padding: 14px 28px;
             font-size: 16px;
@@ -37,23 +30,13 @@
             width: 100%;
             max-width: 300px;
         }
-        button:hover {
-            background-color: #444c56;
-        }
-        button:disabled {
-            background-color: #555;
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-        #status {
-            margin-top: 20px;
-            font-size: 14px;
-            color: #ffeb3b;
-        }
+        button:hover { background-color: #444c56; }
+        button:disabled { background-color: #555; cursor: not-allowed; opacity: 0.7; }
+        #status { margin-top: 20px; font-size: 14px; color: #ffeb3b; }
     </style>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, GithubAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, GithubAuthProvider, signInWithRedirect, getRedirectResult } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyC_UbnaLpQv8Lnq65QQL9ARRZEPRZqW2d8",
@@ -76,25 +59,32 @@
 
             statusEl.textContent = "Sistem hazır.";
 
-            // Butona tıklandığında popup ile giriş başlat ve yeni formata göre yönlendir
+            // GitHub'dan geri dönüldüğünde sonucu yakala
+            getRedirectResult(auth)
+              .then((result) => {
+                if (result) {
+                  const user = result.user;
+                  const email = user.email || "Eposta_Bulunamadi";
+                  statusEl.textContent = "Giriş başarılı! Uygulamaya aktarılıyor...";
+                  
+                  // App Inventor'a e-postayı gönder
+                  setTimeout(() => {
+                      if (window.AppInventor && window.AppInventor.setWebViewString) {
+                          window.AppInventor.setWebViewString(email);
+                      }
+                  }, 500);
+                }
+              })
+              .catch((error) => {
+                statusEl.textContent = "Giriş Hatası: " + error.code;
+                loginBtn.disabled = false;
+              });
+
+            // Butona tıklandığında yönlendirmeyi başlat
             window.girisYap = function() {
                 loginBtn.disabled = true;
-                statusEl.textContent = "GitHub oturum açma penceresi açılıyor...";
-
-                signInWithPopup(auth, provider)
-                  .then((result) => {
-                    const user = result.user;
-                    statusEl.textContent = "Kayıt başarılı! Yönlendiriliyor...";
-                    
-                    // Yeni yönlendirme formatı: appinventor://logined + e-posta
-                    setTimeout(() => {
-                        window.location.href = "appinventor://logined" + encodeURIComponent(user.email || "");
-                    }, 1000);
-                  })
-                  .catch((error) => {
-                    statusEl.textContent = "Giriş Hatası: " + error.code;
-                    loginBtn.disabled = false;
-                  });
+                statusEl.textContent = "GitHub'a yönlendiriliyorsunuz...";
+                signInWithRedirect(auth, provider);
             }
         } catch (e) {
             statusEl.textContent = "Firebase Hatası: " + e.message;
